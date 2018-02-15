@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -39,5 +40,36 @@ namespace HW02.Models
         /// </summary>
         [Required]
         public string DueDate { get; set; }
+    }
+    /// <summary>
+    /// Validates the Task, Completed Status and Date
+    /// </summary>
+    /// <param name="task">the task object</param>
+    /// <param name="context">value of the field that the validator is validating</param>
+    /// <returns></returns>
+    public static ValidationResult ValidateNameCompletedDate(Tasks task, ValidationContext context)
+    {
+        //verify task name is not null or empty
+        if (task.TaskName == null || task.TaskName == "")
+        {
+            return new ValidationResult("Missing Task name.", new List<string> { "TaskName" });
+        }
+        //check if taskname is longer than 100 characters
+        if (task.TaskName.Length > 100)
+        {
+            return new ValidationResult("Task name is too long.", new List<string> { "TaskName" });
+        }
+        //check if Unique value of TaskName 
+        //something will be needed to get the values of the TaskNames already in DB
+        //bool will never be null how to check ?
+        if (task.DueDate == null)
+        {
+            return new ValidationResult("Date is missing", new List<string> { "DueDate" });
+        }
+        //check if the data is the correct format
+        DateTime Test;
+        if (DateTime.TryParseExact(task.DueDate, "yyyy-MM-dd", DateTimeStyles.None, IFormatProvider., out Test){
+
+        }
     }
 }
