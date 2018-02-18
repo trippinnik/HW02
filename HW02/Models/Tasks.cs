@@ -11,7 +11,7 @@ namespace HW02.Models
     /// <summary>
     /// the task entity
     /// </summary>
-    [CustomValidation(typeof(Task), "ValidateNameCompletedDate")]
+    [CustomValidation(typeof(Tasks), "ValidateNameCompletedDate")]
     public class Tasks
     {
         /// <summary>
@@ -40,7 +40,7 @@ namespace HW02.Models
         /// </summary>
         [Required]
         public string DueDate { get; set; }
-    }
+    
     /// <summary>
     /// Validates the Task, Completed Status and Date
     /// </summary>
@@ -50,26 +50,30 @@ namespace HW02.Models
     public static ValidationResult ValidateNameCompletedDate(Tasks task, ValidationContext context)
     {
         //verify task name is not null or empty
-        if (task.TaskName == null || task.TaskName == "")
-        {
-            return new ValidationResult("Missing Task name.", new List<string> { "TaskName" });
-        }
+     if (task.TaskName == null || task.TaskName == "")
+     {
+         return new ValidationResult("Missing Task name.", new List<string> { "TaskName" });
+     }
         //check if taskname is longer than 100 characters
-        if (task.TaskName.Length > 100)
-        {
-            return new ValidationResult("Task name is too long.", new List<string> { "TaskName" });
-        }
+     if (task.TaskName.Length > 100)
+     {
+           return new ValidationResult("Task name is too long.", new List<string> { "TaskName" });
+     }
         //check if Unique value of TaskName 
         //something will be needed to get the values of the TaskNames already in DB
         //bool will never be null how to check ?
-        if (task.DueDate == null)
-        {
-            return new ValidationResult("Date is missing", new List<string> { "DueDate" });
-        }
+     if (task.DueDate == null)
+     {
+           return new ValidationResult("Date is missing", new List<string> { "DueDate" });
+     }
         //check if the data is the correct format
-        DateTime Test;
-        if (DateTime.TryParseExact(task.DueDate, "yyyy-MM-dd", DateTimeStyles.None, IFormatProvider., out Test){
+     DateTime Test;
+     if (!DateTime.TryParseExact(task.DueDate, "yyyy-MM-dd", new CultureInfo("en-US"), DateTimeStyles.None, out Test))
+     {
+           return new ValidationResult("Date is not in format 'yyyy-MM-dd'", new List<string> { "DueDate" });
+     }
 
-        }
+       return ValidationResult.Success;
     }
+}
 }
