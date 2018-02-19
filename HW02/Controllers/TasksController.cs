@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
@@ -41,7 +42,7 @@ namespace HW02.Controllers
         /// <summary>
         /// The configuration instance
         /// </summary>
-        private readonly IDesignTimeMvcBuilderConfiguration _configuration;
+        private readonly IConfiguration _configuration;
 
         /// <summary>
         /// the task limits settings
@@ -53,7 +54,7 @@ namespace HW02.Controllers
         ///</summary>
         public TasksController(ILogger<TasksController> logger,
                                 TaskDatabaseContext context,
-                                IDesignTimeMvcBuilderConfiguration configuration,
+                                IConfiguration configuration,
                                 IOptions<TasksLimits> tasksLimits)
         {
             _logger = logger;
@@ -141,7 +142,7 @@ namespace HW02.Controllers
                             taskEntity = new Tasks()
                             {
                                 Id = id,
-                                TaskName = tasksUpdatePayload.Name,
+                                TaskName = tasksUpdatePayload.TaskName,
                                 IsCompleted = tasksUpdatePayload.IsCompleted,
                                 DueDate = tasksUpdatePayload.DueDate
                             };
@@ -159,7 +160,7 @@ namespace HW02.Controllers
                         }
                     }
                     //update the entity specified by the caller
-                    taskEntity.TaskName = tasksUpdatePayload.Name;
+                    taskEntity.TaskName = tasksUpdatePayload.TaskName;
                     taskEntity.IsCompleted = tasksUpdatePayload.IsCompleted;
                     taskEntity.DueDate = tasksUpdatePayload.DueDate;
 
@@ -260,7 +261,7 @@ namespace HW02.Controllers
                         return StatusCode((int)HttpStatusCode.Forbidden, "Task limit reached!!");
                     }
 
-                    taskEntity.TaskName = taskCreatePayload.Name;
+                    taskEntity.TaskName = taskCreatePayload.TaskName;
                     taskEntity.IsCompleted = taskCreatePayload.IsCompleted;
                     taskEntity.DueDate = taskCreatePayload.DueDate;
 

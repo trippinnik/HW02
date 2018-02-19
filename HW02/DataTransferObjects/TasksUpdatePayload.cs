@@ -16,7 +16,7 @@ namespace HW02.DataTransferObjects
         /// </summary>
         [Required]
         [StringLength(100)]
-        public string Name { get; set; }
+        public string TaskName { get; set; }
 
         /// <summary>
         /// gets or sets IsCompleted flag
@@ -43,7 +43,7 @@ namespace HW02.DataTransferObjects
         /// <returns>A <see cref="String"/> that represents this instance</returns>
         public override string ToString()
         {
-            return $"Name=[{Name}], IsCompleted=[{IsCompleted}], DueDate=[{DueDate}]";
+            return $"Name=[{TaskName}], IsCompleted=[{IsCompleted}], DueDate=[{DueDate}]";
         }
     }
 }

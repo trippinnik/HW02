@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 
 namespace HW02.DataTransferObjects
 {
+    /// <summary>
+    /// tasks creation payload
+    /// </summary>
     public class TasksCreatePayload
     {
         /// <summary>
@@ -15,7 +18,7 @@ namespace HW02.DataTransferObjects
         /// </value>
         [Required]
         [StringLength(100)]
-        public string Name { get; set; }
+        public string TaskName { get; set; }
         
         /// <summary>
         /// sets completed status
@@ -35,7 +38,14 @@ namespace HW02.DataTransferObjects
         [Required]
         [StringLength(10)]
         public string DueDate { get; set; }
-    
+        /// <summary>
+        /// return a <see cref="System.String"/> that represents this instance
+        /// </summary>
+        /// <returns>return a <see cref="System.String"/> that represents this instance</returns>
+        public override string ToString()
+        {
+            return $"Name=[{TaskName}], IsCompleted=[{IsCompleted}], DueDate=[{DueDate}]";
+        }
 
     }
 }

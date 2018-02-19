@@ -18,7 +18,7 @@ namespace HW02.DataTransferObjects
         /// <summary>
         /// gets or sets the name
         /// </summary>
-        public string Name { get; set; }
+        public string TaskName { get; set; }
 
         /// <summary>
         /// gets or sets Is Completed Status
