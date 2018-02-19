@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 
 namespace HW02.DataTransferObjects
 {
+    /// <summary>
+    /// This is the payload to update tasks
+    /// </summary>
     public class TasksUpdatePayload
     {
         /// <summary>

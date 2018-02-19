@@ -5,6 +5,9 @@ using System.Threading.Tasks;
 
 namespace HW02.CustomSettings
 {
+    /// <summary>
+    /// Defines the limits on our Tasks
+    /// </summary>
     public class TasksLimits
     {
         /// <summary>

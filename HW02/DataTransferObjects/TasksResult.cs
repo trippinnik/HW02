@@ -5,6 +5,9 @@ using System.Threading.Tasks;
 
 namespace HW02.DataTransferObjects
 {
+    /// <summary>
+    /// Define the public facing tasks attributes
+    /// </summary>
     public class TasksResult
     {
         /// <summary>

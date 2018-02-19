@@ -21,13 +21,12 @@ namespace HW02.Controllers
     /// provides the implementation for the Tasks resource
     /// </summary>
     [Produces("application/json")]
-    [Route("api/Tasks")]
     public class TasksController : Controller
     {
         /// <summary>
         /// get tasks by id
         /// </summary>
-        private const string GetTasksByIdRoute = "GetCustomerByIdRoute";
+        private const string GetTasksByIdRoute = "GetTasksByIdRoute";
 
         /// <summary>
         /// DB context
@@ -118,7 +117,7 @@ namespace HW02.Controllers
         [ProducesResponseType(typeof(Tasks), (int)HttpStatusCode.Created)]
         [ProducesResponseType((int)HttpStatusCode.BadRequest)]
         [ProducesResponseType(typeof(void), 500)]
-        [Route("api/v1/customers/{id}")]
+        [Route("api/v1/tasks/{id}")]
         [HttpPut]
         public IActionResult UpdateOrCreateTasks(int id, [FromBody] TasksUpdatePayload tasksUpdatePayload)
         {
@@ -240,7 +239,7 @@ namespace HW02.Controllers
         /// <summary>
         /// Creates the task
         /// </summary>
-        /// <param name="taskCreatePayload">The customer.</param>
+        /// <param name="taskCreatePayload">The task.</param>
         /// <returns>An IAction result indicating HTTP 201 created if success otherwise BadRequest if the input is not valid.</returns>
         [ProducesResponseType(typeof(Tasks), (int)HttpStatusCode.Created)]
         [ProducesResponseType((int)HttpStatusCode.BadRequest)]
@@ -255,7 +254,7 @@ namespace HW02.Controllers
             {
                 if (ModelState.IsValid)
                 {
-                    // First verify that there are not the max customers allready
+                    // First verify that there are not the max tasks already
                     if (!CanAddMoreTasks())
                     {
                         return StatusCode((int)HttpStatusCode.Forbidden, "Task limit reached!!");
