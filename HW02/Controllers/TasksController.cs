@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
+using HW02.Common;
 using HW02.CustomSettings;
 using HW02.Data;
 using HW02.DataTransferObjects;
@@ -133,7 +134,7 @@ namespace HW02.Controllers
                         using (IDbContextTransaction transaction = _context.Database.BeginTransaction())
                         {
                             //check out task limits
-                            if (!CanAddMoreCustomers())
+                            if (!CanAddMoreTasks())
                             {
                                 return StatusCode((int)HttpStatusCode.Forbidden, "Task limit already reached");
                             }
