@@ -199,8 +199,24 @@ namespace HW02.Controllers
 
             return false;
         }
-
-
+        /// <summary>
+        /// Find out if the task name is already in use
+        /// </summary>
+        /// <param name="taskName">String that should be the taskname to check for exhistance</param>
+        /// <returns></returns>
+        private bool TaskNameIsUnique(String taskName)
+        {
+            
+                var dbTask = (from c in _context.Tasks where c.TaskName == taskName select c).SingleOrDefault();
+                if (dbTask == null)
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+        }
 
         /// <summary>
         /// Deletes the task
@@ -259,6 +275,10 @@ namespace HW02.Controllers
                     if (!CanAddMoreTasks())
                     {
                         return StatusCode((int)HttpStatusCode.Forbidden, "Task limit reached!!");
+                    }
+                    if (!TaskNameIsUnique(taskCreatePayload.TaskName))
+                    {
+
                     }
 
                     taskEntity.TaskName = taskCreatePayload.TaskName;
