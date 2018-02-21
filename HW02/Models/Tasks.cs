@@ -47,7 +47,7 @@ namespace HW02.Models
     /// <param name="task">the task object</param>
     /// <param name="context">value of the field that the validator is validating</param>
     /// <returns></returns>
-    public static ValidationResult ValidateNameCompletedDate(Tasks task, ValidationContext context)
+    public static ValidationResult ValidateNameCompletedDate(Tasks task)
     {
         //verify task name is not null or empty
      if (task.TaskName == null || task.TaskName == "")
@@ -75,5 +75,67 @@ namespace HW02.Models
 
        return ValidationResult.Success;
     }
-}
+        /// <summary>
+        /// check the taskname is 
+        /// </summary>
+        /// <returns></returns>
+        public bool IsNotNullTaskName(Tasks task)
+        {
+            //verify task name is not null or empty
+            if (task.TaskName == null || task.TaskName == "")
+            {
+                return false;
+            }
+            return true;
+        }
+        /// <summary>
+        /// validation that the task name is not greater than 100
+        /// </summary>
+        /// <param name="task"></param>
+        /// <returns></returns>
+        public bool IsValidTaskName(Tasks task)
+        {
+            //check if taskname is longer than 100 characters
+            if (task.TaskName.Length > 100)
+            {
+                return false;
+            }
+            return true;
+        }
+        
+        /// <summary>
+        /// Check that due date is not null or empty
+        /// </summary>
+        /// <param name="task"></param>
+        /// <returns></returns>
+        public bool IsNotNullDueDate(Tasks task)
+        {
+            {
+                //verify task name is not null or empty
+                if (task.DueDate == null || task.DueDate == "")
+                {
+                    return false;
+                }
+                return true;
+            }
+        }
+        /// <summary>
+        /// check that the date format matches yyyy-MM-dd
+        /// </summary>
+        /// <param name="task"></param>
+        /// <returns></returns>
+        public bool IsValidDueDate(Tasks task)
+        {
+            DateTime Test;
+            if (!DateTime.TryParseExact(task.DueDate, "yyyy-MM-dd", new CultureInfo("en-US"), DateTimeStyles.None, out Test))
+            {
+                return false;
+            }
+            return true;
+        }
+        
+    }
+    
+    
+   
 }

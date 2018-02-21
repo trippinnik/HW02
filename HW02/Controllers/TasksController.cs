@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
@@ -136,7 +137,8 @@ namespace HW02.Controllers
                             //check out task limits
                             if (!CanAddMoreTasks())
                             {
-                                return StatusCode((int)HttpStatusCode.Forbidden, "Task limit already reached");
+                                PublicErrorResponse publicErrorResponse = new PublicErrorResponse() { errorNumber = 4, parameterName = null, parameterValue = null, errorDescription = "The maximum number of entities have been created. No further entities can be created at this time." };
+                                return StatusCode((int)HttpStatusCode.Forbidden, publicErrorResponse);
                             }
 
                             taskEntity = new Tasks()
@@ -260,6 +262,7 @@ namespace HW02.Controllers
         /// <returns>An IAction result indicating HTTP 201 created if success otherwise BadRequest if the input is not valid.</returns>
         [ProducesResponseType(typeof(Tasks), (int)HttpStatusCode.Created)]
         [ProducesResponseType((int)HttpStatusCode.BadRequest)]
+        [ProducesResponseType((int)HttpStatusCode.Forbidden)]
         [ProducesResponseType(typeof(void), 500)]
         [Route("api/v1/tasks")]
         [HttpPost]
@@ -274,17 +277,21 @@ namespace HW02.Controllers
                     // First verify that there are not the max tasks already
                     if (!CanAddMoreTasks())
                     {
-                        return StatusCode((int)HttpStatusCode.Forbidden, "Task limit reached!!");
+                        PublicErrorResponse publicErrorResponse = new PublicErrorResponse() { errorNumber = 4, parameterName = null, parameterValue = null, errorDescription = "The maximum number of entities have been created. No further entities can be created at this time." };
+                        return StatusCode((int)HttpStatusCode.Forbidden, publicErrorResponse);
                     }
                     if (!TaskNameIsUnique(taskCreatePayload.TaskName))
                     {
+                        PublicErrorResponse publicErrorResponse = new PublicErrorResponse() { errorNumber = 1, parameterName = "taskName", parameterValue = taskEntity.TaskName, errorDescription = "The Task Name already exhists." };
 
+                        return StatusCode((int)HttpStatusCode.Conflict, new BadRequestObjectResult(publicErrorResponse));
                     }
-
+                    
+                    if(validationResult.Success)
                     taskEntity.TaskName = taskCreatePayload.TaskName;
                     taskEntity.IsCompleted = taskCreatePayload.IsCompleted;
                     taskEntity.DueDate = taskCreatePayload.DueDate;
-
+                    if (Tasks.ValidateNameCompletedDate(taskEntity).
 
                     // Tell entity framework to add the address entity
                     _context.Tasks.Add(taskEntity);
