@@ -76,13 +76,13 @@ namespace HW02.Models
        return ValidationResult.Success;
     }
         /// <summary>
-        /// check the taskname is 
+        /// check the taskname is not null
         /// </summary>
-        /// <returns></returns>
-        public bool IsNotNullTaskName(Tasks task)
+        /// <returns>bool</returns>
+        public bool IsNotNullTaskName(String taskName)
         {
             //verify task name is not null or empty
-            if (task.TaskName == null || task.TaskName == "")
+            if (taskName == null || taskName == "")
             {
                 return false;
             }
@@ -93,10 +93,10 @@ namespace HW02.Models
         /// </summary>
         /// <param name="task"></param>
         /// <returns></returns>
-        public bool IsValidTaskName(Tasks task)
+        public bool IsValidTaskName(string taskName)
         {
             //check if taskname is longer than 100 characters
-            if (task.TaskName.Length > 100)
+            if (taskName.Length > 100)
             {
                 return false;
             }
@@ -106,13 +106,13 @@ namespace HW02.Models
         /// <summary>
         /// Check that due date is not null or empty
         /// </summary>
-        /// <param name="task"></param>
+        /// <param name="dueDate"></param>
         /// <returns></returns>
-        public bool IsNotNullDueDate(Tasks task)
+        public bool IsNotNullDueDate(String dueDate)
         {
             {
                 //verify task name is not null or empty
-                if (task.DueDate == null || task.DueDate == "")
+                if (dueDate == null || dueDate == "")
                 {
                     return false;
                 }
@@ -122,12 +122,12 @@ namespace HW02.Models
         /// <summary>
         /// check that the date format matches yyyy-MM-dd
         /// </summary>
-        /// <param name="task"></param>
+        /// <param name="dueDate"></param>
         /// <returns></returns>
-        public bool IsValidDueDate(Tasks task)
+        public bool IsValidDueDate(String dueDate)
         {
             DateTime Test;
-            if (!DateTime.TryParseExact(task.DueDate, "yyyy-MM-dd", new CultureInfo("en-US"), DateTimeStyles.None, out Test))
+            if (!DateTime.TryParseExact(dueDate, "yyyy-MM-dd", new CultureInfo("en-US"), DateTimeStyles.None, out Test))
             {
                 return false;
             }

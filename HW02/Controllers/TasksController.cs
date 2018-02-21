@@ -113,7 +113,7 @@ namespace HW02.Controllers
         /// Updates or creates a task
         /// </summary>
         /// <param name="id"></param>
-        /// <param name="taskUpdatePayload"></param>
+        /// <param name="tasksUpdatePayload"></param>
         /// <returns></returns>
         [ProducesResponseType((int)HttpStatusCode.NoContent)]
         [ProducesResponseType(typeof(Tasks), (int)HttpStatusCode.Created)]
@@ -286,12 +286,36 @@ namespace HW02.Controllers
 
                         return StatusCode((int)HttpStatusCode.Conflict, new BadRequestObjectResult(publicErrorResponse));
                     }
-                    
-                    if(validationResult.Success)
+
+                    if (!taskEntity.IsNotNullTaskName(taskCreatePayload.TaskName))
+                    {
+                        PublicErrorResponse publicErrorResponse = new PublicErrorResponse() { errorNumber = 2, parameterName = "taskName", parameterValue = taskEntity.TaskName, errorDescription = "The Task Name is missing." };
+
+                        return StatusCode((int)HttpStatusCode.Conflict, new BadRequestObjectResult(publicErrorResponse));
+                    }
+                    if (!taskEntity.IsValidTaskName(taskCreatePayload.TaskName))
+                    {
+                        PublicErrorResponse publicErrorResponse = new PublicErrorResponse() { errorNumber = 2, parameterName = "taskName", parameterValue = taskEntity.TaskName, errorDescription = "The Task Name is invalid." };
+
+                        return StatusCode((int)HttpStatusCode.Conflict, new BadRequestObjectResult(publicErrorResponse));
+                    }
+                    if (!taskEntity.IsNotNullDueDate(taskCreatePayload.DueDate))
+                    {
+                        PublicErrorResponse publicErrorResponse = new PublicErrorResponse() { errorNumber = 2, parameterName = "dueDate", parameterValue = taskEntity.TaskName, errorDescription = "The due date is missing." };
+
+                        return StatusCode((int)HttpStatusCode.Conflict, new BadRequestObjectResult(publicErrorResponse));
+                    }
+                    if (!taskEntity.IsValidDueDate(taskCreatePayload.DueDate))
+                    {
+                        PublicErrorResponse publicErrorResponse = new PublicErrorResponse() { errorNumber = 2, parameterName = "dueDate", parameterValue = taskEntity.TaskName, errorDescription = "The due date is invalid, the date needs to be in formate yyyy-MM-dd." };
+
+                        return StatusCode((int)HttpStatusCode.Conflict, new BadRequestObjectResult(publicErrorResponse));
+                    }
+
                     taskEntity.TaskName = taskCreatePayload.TaskName;
                     taskEntity.IsCompleted = taskCreatePayload.IsCompleted;
                     taskEntity.DueDate = taskCreatePayload.DueDate;
-                    if (Tasks.ValidateNameCompletedDate(taskEntity).
+                    
 
                     // Tell entity framework to add the address entity
                     _context.Tasks.Add(taskEntity);
