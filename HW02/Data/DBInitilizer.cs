@@ -6,8 +6,15 @@ using System.Threading.Tasks;
 
 namespace HW02.Data
 {
+    /// <summary>
+    /// check if there is data in DB and seed some starter data
+    /// </summary>
     public class DBInitilizer
     {
+        /// <summary>
+        /// check the status and seed data if needed
+        /// </summary>
+        /// <param name="context"></param>
         public static void Initialize(TaskDatabaseContext context)
         {
             //check to see if there is already data in table

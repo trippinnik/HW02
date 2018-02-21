@@ -11,6 +11,12 @@ namespace HW02.DataTransferObjects
     /// </summary>
     public class TasksUpdatePayload
     {
+
+        /// <summary>
+        /// task ID
+        /// </summary>
+        [Required]
+        public int? Id { get; set; }
         /// <summary>
         /// gets or sets the task name
         /// </summary>
@@ -34,7 +40,6 @@ namespace HW02.DataTransferObjects
         /// string with date in format yyyy-MM-dd
         /// </value>
         [Required]
-        [StringLength(10)]
         public string DueDate { get; set; }
         
         /// <summary>

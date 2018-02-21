@@ -12,6 +12,10 @@ namespace HW02.DataTransferObjects
     public class TasksCreatePayload
     {
         /// <summary>
+        /// task ID
+        /// </summary>
+        public int Id { get; set; }
+        /// <summary>
         /// gets or sets the task name
         /// </summary>
         /// <value>name
@@ -36,7 +40,6 @@ namespace HW02.DataTransferObjects
         /// string holding date yyyy-MM-dd
         /// </value>
         [Required]
-        [StringLength(10)]
         public string DueDate { get; set; }
         /// <summary>
         /// return a <see cref="System.String"/> that represents this instance

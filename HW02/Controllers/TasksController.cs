@@ -127,8 +127,34 @@ namespace HW02.Controllers
             {
                 if (ModelState.IsValid)
                 {
+                    
                     Tasks taskEntity = (from c in _context.Tasks where c.Id == id select c).SingleOrDefault();
+                    Tasks taskTest = new Tasks();
 
+                    if (!taskTest.IsNotNullTaskName(tasksUpdatePayload.TaskName))
+                    {
+                        PublicErrorResponse publicErrorResponse = new PublicErrorResponse() { errorNumber = 2, parameterName = "taskName", parameterValue = taskEntity.TaskName, errorDescription = "The Task Name is missing." };
+
+                        return StatusCode((int)HttpStatusCode.Conflict, new BadRequestObjectResult(publicErrorResponse));
+                    }
+                    if (!taskTest.IsValidTaskName(tasksUpdatePayload.TaskName))
+                    {
+                        PublicErrorResponse publicErrorResponse = new PublicErrorResponse() { errorNumber = 2, parameterName = "taskName", parameterValue = taskEntity.TaskName, errorDescription = "The Task Name is invalid." };
+
+                        return StatusCode((int)HttpStatusCode.Conflict, new BadRequestObjectResult(publicErrorResponse));
+                    }
+                    if (!taskTest.IsNotNullDueDate(tasksUpdatePayload.DueDate))
+                    {
+                        PublicErrorResponse publicErrorResponse = new PublicErrorResponse() { errorNumber = 2, parameterName = "dueDate", parameterValue = taskEntity.TaskName, errorDescription = "The due date is missing." };
+
+                        return StatusCode((int)HttpStatusCode.Conflict, new BadRequestObjectResult(publicErrorResponse));
+                    }
+                    if (!taskTest.IsValidDueDate(tasksUpdatePayload.DueDate))
+                    {
+                        PublicErrorResponse publicErrorResponse = new PublicErrorResponse() { errorNumber = 2, parameterName = "dueDate", parameterValue = taskEntity.TaskName, errorDescription = "The due date is invalid, the date needs to be in formate yyyy-MM-dd." };
+
+                        return StatusCode((int)HttpStatusCode.Conflict, new BadRequestObjectResult(publicErrorResponse));
+                    }
                     //if not found create new entity using the id specified
                     if (taskEntity == null)
                     {
@@ -140,6 +166,8 @@ namespace HW02.Controllers
                                 PublicErrorResponse publicErrorResponse = new PublicErrorResponse() { errorNumber = 4, parameterName = null, parameterValue = null, errorDescription = "The maximum number of entities have been created. No further entities can be created at this time." };
                                 return StatusCode((int)HttpStatusCode.Forbidden, publicErrorResponse);
                             }
+
+
 
                             taskEntity = new Tasks()
                             {
@@ -160,6 +188,13 @@ namespace HW02.Controllers
 
                             return CreatedAtRoute(GetTasksByIdRoute, new { id = taskEntity.Id }, taskEntity);
                         }
+                    }
+                    //we're adding a new entry so must check duplicate name
+                    if (!TaskNameIsUnique(tasksUpdatePayload.TaskName))
+                    {
+                        PublicErrorResponse publicErrorResponse = new PublicErrorResponse() { errorNumber = 1, parameterName = "taskName", parameterValue = taskEntity.TaskName, errorDescription = "The Task Name already exhists." };
+
+                        return StatusCode((int)HttpStatusCode.Conflict, new BadRequestObjectResult(publicErrorResponse));
                     }
                     //update the entity specified by the caller
                     taskEntity.TaskName = tasksUpdatePayload.TaskName;
