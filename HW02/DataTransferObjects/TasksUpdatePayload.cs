@@ -11,13 +11,7 @@ namespace HW02.DataTransferObjects
     /// </summary>
     public class TasksUpdatePayload
     {
-
-        /// <summary>
-        /// task ID
-        /// </summary>
-        [Required]
-        public int? Id { get; set; }
-        /// <summary>
+         /// <summary>
         /// gets or sets the task name
         /// </summary>
         [Required]

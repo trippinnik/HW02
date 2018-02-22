@@ -81,7 +81,15 @@ namespace HW02.Controllers
                 Tasks task = (from c in _context.Tasks where c.Id == id select c).SingleOrDefault();
                 if (task == null)
                 {
-                    _logger.LogInformation(LoggingEvents.GetItem, $"TasksController Tasks(id=[{id}]) was not found.", id);
+                    PublicErrorResponse publicErrorResponse = new PublicErrorResponse()
+                    {
+                        errorNumber = 5,
+                        parameterName = "id",
+                        parameterValue = id.ToString(),
+                        errorDescription = "The entity could not be found"
+                    };
+
+                    return StatusCode((int)HttpStatusCode.NotFound, publicErrorResponse);
                 }
                 return new ObjectResult(task);
             }
@@ -101,7 +109,7 @@ namespace HW02.Controllers
         [ProducesResponseType(typeof(string), 400)]
         [ProducesResponseType(typeof(void), 500)]
         [Route("api/v1/tasks")]
-        public IActionResult GetAllTasks()
+        public IActionResult GetAllTasks(GetAllTasksPayload getAllTasksPayload)
         {
             List<int?> tasksIds = (from c in _context.Tasks select c.Id).ToList();
 
@@ -121,7 +129,7 @@ namespace HW02.Controllers
         [ProducesResponseType(typeof(void), 500)]
         [Route("api/v1/tasks/{id}")]
         [HttpPut]
-        public IActionResult UpdateOrCreateTasks(int id, [FromBody] TasksUpdatePayload tasksUpdatePayload)
+        public IActionResult UpdateTasks(int id, [FromBody] TasksUpdatePayload tasksUpdatePayload)
         {
             try
             {
@@ -130,7 +138,14 @@ namespace HW02.Controllers
                     
                     Tasks taskEntity = (from c in _context.Tasks where c.Id == id select c).SingleOrDefault();
                     Tasks taskTest = new Tasks();
+                    //check if the taskname exhists and that taskname is not the record we are updating
+                    Tasks checkTaskNameDuplicate = (from r in _context.Tasks where r.TaskName == tasksUpdatePayload.TaskName && id != r.Id select r).SingleOrDefault();
+                    if (!(checkTaskNameDuplicate == null))
+                    {
+                        PublicErrorResponse publicErrorResponse = new PublicErrorResponse() { errorNumber = 1, parameterName = "taskName", parameterValue = taskEntity.TaskName, errorDescription = "The Task Name already exhists." };
 
+                        return StatusCode((int)HttpStatusCode.Conflict, new BadRequestObjectResult(publicErrorResponse));
+                    } 
                     if (!taskTest.IsNotNullTaskName(tasksUpdatePayload.TaskName))
                     {
                         PublicErrorResponse publicErrorResponse = new PublicErrorResponse() { errorNumber = 2, parameterName = "taskName", parameterValue = taskEntity.TaskName, errorDescription = "The Task Name is missing." };
@@ -158,44 +173,19 @@ namespace HW02.Controllers
                     //if not found create new entity using the id specified
                     if (taskEntity == null)
                     {
-                        using (IDbContextTransaction transaction = _context.Database.BeginTransaction())
-                        {
-                            //check out task limits
-                            if (!CanAddMoreTasks())
-                            {
-                                PublicErrorResponse publicErrorResponse = new PublicErrorResponse() { errorNumber = 4, parameterName = null, parameterValue = null, errorDescription = "The maximum number of entities have been created. No further entities can be created at this time." };
-                                return StatusCode((int)HttpStatusCode.Forbidden, publicErrorResponse);
-                            }
 
+                        PublicErrorResponse publicErrorResponse = new PublicErrorResponse() {
+                            errorNumber = 5,
+                            parameterName = "id",
+                            parameterValue = id.ToString(),
+                            errorDescription = "The entity could not be found"
+                        };
 
-
-                            taskEntity = new Tasks()
-                            {
-                                Id = id,
-                                TaskName = tasksUpdatePayload.TaskName,
-                                IsCompleted = tasksUpdatePayload.IsCompleted,
-                                DueDate = tasksUpdatePayload.DueDate
-                            };
-
-                            // turn identity insert on so that we can set ID provided by the client
-                            _context.Database.ExecuteSqlCommand("SET IDENTITY_INSERT Tasks ON;");
-                            _context.Tasks.Add(taskEntity);
-                            _context.SaveChanges();
-
-                            //turn id insert off so default bahavior for new ids will be used
-                            _context.Database.ExecuteSqlCommand("SET IDENTITy_INSERT Tasks OFF");
-                            transaction.Commit();
-
-                            return CreatedAtRoute(GetTasksByIdRoute, new { id = taskEntity.Id }, taskEntity);
-                        }
+                    return StatusCode((int)HttpStatusCode.Forbidden, publicErrorResponse);              
+                                                    
                     }
-                    //we're adding a new entry so must check duplicate name
-                    if (!TaskNameIsUnique(tasksUpdatePayload.TaskName))
-                    {
-                        PublicErrorResponse publicErrorResponse = new PublicErrorResponse() { errorNumber = 1, parameterName = "taskName", parameterValue = taskEntity.TaskName, errorDescription = "The Task Name already exhists." };
-
-                        return StatusCode((int)HttpStatusCode.Conflict, new BadRequestObjectResult(publicErrorResponse));
-                    }
+                    
+                    
                     //update the entity specified by the caller
                     taskEntity.TaskName = tasksUpdatePayload.TaskName;
                     taskEntity.IsCompleted = tasksUpdatePayload.IsCompleted;
@@ -273,8 +263,14 @@ namespace HW02.Controllers
 
                 if (dbTask == null)
                 {
-                    _logger.LogInformation(LoggingEvents.UpdateItem, $"TasksController Tasks(id=[{id}]) was not found.", id);
-                    return NotFound();
+                    PublicErrorResponse publicErrorResponse = new PublicErrorResponse() { 
+                                                                                          errorNumber = 5, 
+                                                                                          parameterName = "id",
+                                                                                          parameterValue = id.ToString(),
+                                                                                          errorDescription = "The entity could not be found"
+                                                                                        };
+                
+                    return StatusCode((int)HttpStatusCode.NotFound, publicErrorResponse);
                 }
 
                 _context.Tasks.Remove(dbTask);
